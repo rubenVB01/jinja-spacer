@@ -1,36 +1,57 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+/**
+ * Function to format Jinja, SQL, and YAML templates
+ * Ensures spaces inside {{ }} and {% %}
+ */
+function formatJinjaSpacing(text) {
+    return text
+        .replace(/{%\s*(.*?)\s*%}/g, '{% $1 %}')
+        .replace(/{{\s*(.*?)\s*}}/g, '{{ $1 }}');
+}
 
 /**
+ * Activate the extension
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
+    console.log('Extension "jinja-spacer" is now active!');
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "jinja-spacer" is now active!');
+    const onSaveListener = vscode.workspace.onDidSaveTextDocument(async (document) => {
+        const { languageId } = document;
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with  registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('jinja-spacer.helloWorld', function () {
-		// The code you place here will be executed every time your command is executed
+        // Check if the file type is Jinja, SQL, or YAML
+        if (['jinja', 'sql', 'yaml', 'yml'].includes(languageId)) {
+            console.log(`Formatting applied on save: ${document.fileName}`);
 
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from jinja-spacer!');
-	});
+            const edit = new vscode.WorkspaceEdit();
+            const fullRange = new vscode.Range(
+                document.lineAt(0).range.start,
+                document.lineAt(document.lineCount - 1).range.end
+            );
 
-	context.subscriptions.push(disposable);
+            const formattedText = formatJinjaSpacing(document.getText());
+
+            // If the formatting changed something, apply it
+            if (formattedText !== document.getText()) {
+                edit.replace(document.uri, fullRange, formattedText);
+                await vscode.workspace.applyEdit(edit);
+
+                // Save the document again after applying edits
+                await document.save();
+            }
+        }
+    });
+
+    context.subscriptions.push(onSaveListener);
 }
 
-// This method is called when your extension is deactivated
+/**
+ * Deactivate the extension
+ */
 function deactivate() {}
 
 module.exports = {
-	activate,
-	deactivate
-}
+    activate,
+    deactivate
+};

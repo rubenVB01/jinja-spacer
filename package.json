@@ -1,21 +1,34 @@
 {
   "name": "jinja-spacer",
-  "displayName": "jinja-spacer",
-  "description": "VS Code extension that automatically adds blank spaces between {{ }}, {% %} and {# #} for better code readability",
+  "displayName": "Jinja Spacer",
+  "description": "VS Code extension that automatically adds blank spaces between {{ }} and {% %} for better code readability",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.97.0"
   },
   "categories": [
-    "Other"
+    "Formatters"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:jinja",
+    "onLanguage:sql",
+    "onLanguage:yaml",
+    "onLanguage:yml",
+    "workspace.onDidSaveTextDocument"
+  ],
   "main": "./extension.js",
   "contributes": {
-    "commands": [{
-      "command": "jinja-spacer.helloWorld",
-      "title": "Hello World"
-    }]
+    "languages": [
+      { "id": "jinja", "extensions": [".jinja", ".j2"] },
+      { "id": "sql", "extensions": [".sql"] },
+      { "id": "yaml", "extensions": [".yml", ".yaml"] }
+    ],
+    "commands": [
+      {
+        "command": "jinja-spacer.formatDocument",
+        "title": "Format Jinja Spacing"
+      }
+    ]
   },
   "scripts": {
     "lint": "eslint .",
