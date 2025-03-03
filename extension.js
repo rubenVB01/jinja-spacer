@@ -6,8 +6,8 @@ const vscode = require('vscode');
  */
 function formatJinjaSpacing(text) {
     return text
-        .replace(/{%\s*(.*?)\s*%}/g, '{% $1 %}')
-        .replace(/{{\s*(.*?)\s*}}/g, '{{ $1 }}');
+		.replace(/{%(-?)\s*(.*?)\s*(-?)%}/g, '{%$1 $2 $3%}')
+		.replace(/{{(-?)\s*(.*?)\s*(-?)}}/g, '{{$1 $2 $3}}');
 }
 
 /**
