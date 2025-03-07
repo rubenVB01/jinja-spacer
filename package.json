@@ -3,7 +3,7 @@
   "displayName": "Jinja Spacer",
   "publisher": "ruben-vibax",
   "description": "VS Code extension that automatically adds blank spaces between {{ }} and {% %} for better code readability",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "icon": "media/jinja_logo.png",
   "repository": {
     "type": "git",
